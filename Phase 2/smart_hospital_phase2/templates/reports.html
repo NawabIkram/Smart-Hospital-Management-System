@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card p-4 mb-4">
+    <h2 class="mb-1">Advanced SQL Reports</h2>
+    <p class="text-light-50 mb-0">
+        These reports demonstrate JOIN, GROUP BY, ORDER BY, COUNT, SUM, and AVG using real MySQL queries.
+    </p>
+</div>
+
+{% for report in report_data %}
+<div class="glass-card p-4 mb-4 report-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h3 class="mb-1">{{ report.title }}</h3>
+            <span class="badge text-bg-info">{{ report.description }}</span>
+        </div>
+    </div>
+
+    {% if report.error %}
+        <div class="alert alert-danger rounded-4">{{ report.error }}</div>
+    {% else %}
+        <div class="table-responsive table-3d">
+            <table class="table table-dark table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        {% for column in report.columns %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in report.rows %}
+                    <tr>
+                        {% for column in report.columns %}
+                            <td>{{ row[column] if row[column] is not none else '-' }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="text-center py-4" colspan="{{ report.columns|length if report.columns else 1 }}">
+                            No data available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
