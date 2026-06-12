@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card p-4 mb-4">
+    <h2 class="mb-1">Database Views</h2>
+    <p class="text-light-50 mb-0">
+        These are reusable MySQL views created in <code>sql/hospital_schema.sql</code>. A view behaves like a virtual table.
+    </p>
+</div>
+
+<!-- <div class="glass-card p-4 mb-4">
+    <h4>How to confirm views are working?</h4>
+    <p class="mb-2">Run these commands in phpMyAdmin SQL tab after importing the schema:</p>
+    <pre class="bg-dark text-light rounded-4 p-3 mb-0"><code>SHOW FULL TABLES WHERE Table_type = 'VIEW';
+SELECT * FROM vw_appointment_schedule;
+SELECT * FROM vw_doctor_workload;</code></pre>
+</div> -->
+
+{% for view in view_data %}
+<div class="glass-card p-4 mb-4 report-card">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div>
+            <h3 class="mb-1">{{ view.title }}</h3>
+            <p class="text-light-50 mb-2">{{ view.purpose }}</p>
+            <span class="badge text-bg-warning">{{ view.name }}</span>
+        </div>
+    </div>
+
+    <pre class="bg-dark text-light rounded-4 p-3"><code>{{ view.query }};</code></pre>
+
+    <div class="table-responsive table-3d">
+        <table class="table table-dark table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    {% for column in view.columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in view.rows %}
+                <tr>
+                    {% for column in view.columns %}
+                        <td>{{ row[column] if row[column] is not none else '-' }}</td>
+                    {% endfor %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td class="text-center py-4" colspan="{{ view.columns|length if view.columns else 1 }}">No data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
