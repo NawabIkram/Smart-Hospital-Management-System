@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-3d mb-4">
+    <div class="hero-content">
+        <span class="badge rounded-pill text-bg-info mb-3">Phase 2 Implementation</span>
+        <h1>Smart Hospital Management System</h1>
+        <p>
+            A 3D-styled web GUI connected to MySQL on XAMPP. Use the CRUD modules to add,
+            view, update, delete, search, and test all EERD entities.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary btn-3d" href="{{ url_for('entity_list', entity_key='patients') }}">Manage Patients</a>
+            <a class="btn btn-outline-light btn-3d" href="{{ url_for('reports') }}">View SQL Reports</a>
+        </div>
+    </div>
+
+    <div class="floating-cube">
+        <div class="cube-face cube-front">DB</div>
+        <div class="cube-face cube-back">SQL</div>
+        <div class="cube-face cube-left">CRUD</div>
+        <div class="cube-face cube-right">GUI</div>
+        <div class="cube-face cube-top">3D</div>
+        <div class="cube-face cube-bottom">ERD</div>
+    </div>
+</section>
+
+{% if error_message %}
+<div class="alert alert-danger rounded-4 shadow-sm">
+    <strong>Database connection issue:</strong> {{ error_message }}
+    <hr>
+    Start XAMPP Apache + MySQL, import <code>sql/hospital_schema.sql</code>, then refresh this page.
+</div>
+{% else %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div>
+                    <h3 class="mb-1">Live Database Summary</h3>
+                    <p class="text-light-50 mb-0">Counts are loaded directly from MySQL.</p>
+                </div>
+                {% if db_status %}
+                    <span class="badge text-bg-success rounded-pill">Connected</span>
+                {% else %}
+                    <span class="badge text-bg-danger rounded-pill">Disconnected</span>
+                {% endif %}
+            </div>
+
+            <div class="row g-3">
+                {% for item in counts %}
+                <div class="col-sm-6 col-xl-4">
+                    <div class="stat-card tilt-card">
+                        <span>{{ item.Label }}</span>
+                        <strong>{{ item.Total }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <h3>3 GUI Areas</h3>
+            <ol class="feature-list">
+                <li><strong>Dashboard:</strong> live stats and navigation.</li>
+                <li><strong>CRUD Modules:</strong> forms and tables for each entity.</li>
+                <li><strong>Reports:</strong> JOIN, GROUP BY, SUM, AVG, COUNT queries.</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card p-4 mt-4">
+    <h3 class="mb-3">Main CRUD Modules</h3>
+    <div class="module-grid">
+        {% for key, item in entities.items() %}
+            <a class="module-card tilt-card" href="{{ url_for('entity_list', entity_key=key) }}">
+                <span>{{ loop.index }}</span>
+                <strong>{{ item.display_name }}</strong>
+                <small>Open CRUD</small>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
